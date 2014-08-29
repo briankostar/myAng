@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Scope</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js"></script>
+</head>
+<body >
+<h1>Scope Inheritance<h1>
+<div ng-app="myApp">
+
+
+<div ng-controller="Ctrl1"><input ng-model="data.data" />{{data.data}}</div>
+<div ng-controller="Ctrl2"><input ng-model="data.data" />{{data.data}}</div>
+</div>
+
+<script>
+//Here, we'll demonstrate model sharing btween controllers through a service rather than parent scope
+var app = angular.module('myApp', []);
+
+//factory returns an object
+app.factory('DataFactory', function(){
+	return {data: "Hello"}
+})
+
+//inject DataFactory service to use it.
+app.controller('Ctrl1', function($scope, DataFactory){
+	//DataFactory is {data:"Hello"}
+	$scope.data = DataFactory;
+})
+
+app.controller('Ctrl2', function($scope, DataFactory){
+	$scope.data = DataFactory;
+})
+//question, with input, how do I change the data in the factory?
+</script>
+
+</body>
+</html>

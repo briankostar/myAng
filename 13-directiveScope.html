@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Directive Scope</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js">
+	</script>
+
+</head>
+<body >
+<h1>Isolate Scope</h1>
+<div ng-app="myApp">
+
+<div ng-controller="ChoreCtrl">
+	<cat done="logChore(chore)"></cat>
+</div>
+</div>
+
+<script>
+var app = angular.module("myApp", []);
+
+app.directive("cat", function(){
+	return {
+		restrict: "E",
+		//give this isolate scope, but breaks bindings with controller
+		scope: {
+			//maps this el's scope's done to &, which is the HTML attr expression logChore()
+			//basically.. controller's scope.logChore gets mapped to el's scope's done
+			done: "&"
+		},
+		template: '<input type="text" ng-model="chore"> {{chore}}'+
+					'<button ng-click="done({chore: chore}"> button </button>'
+	}
+})
+app.controller('ChoreCtrl', function($scope){
+	//function on scope that takes in chore str as input
+	$scope.logChore = function(chore){
+		alert(chore + " is done!")
+	}
+})
+</script>
+
+</body>
+</html>

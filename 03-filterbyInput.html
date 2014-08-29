@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Filters</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js"></script>
+</head>
+<body >
+<h1>Filter by Search Text</h1>
+<div ng-app="myApp">
+	<div ng-controller="Ctrl1">
+	<!-- Apply filter with input. $ searches all fields in the model-->
+	Search: <input ng-model="keyword.$">
+	<!-- Apply filter with input. keyword can specify the model to filter on-->
+	By Name: <input ng-model="keyword.name">
+	By Phone: <input ng-model="keyword.phone">
+	<table>
+		<tr ng-repeat="person in data.people | filter:keyword">
+			<td>{{$index + 1}}</td>
+			<td>{{person.name}}</td>
+			<td>{{person.phone}}</td>
+		</tr>
+	</table>
+	<br />
+	<table>
+		<tr ng-repeat="person in data.people | filter:keyword | orderBy:'name' | limitTo:'3' ">
+			<td>{{$index + 1}}</td>
+			<td>{{person.name | uppercase}}</td>
+			<td>{{person.phone}}</td>
+		</tr>
+	</table>
+	</div>
+</div>
+
+<script>
+var app = angular.module('myApp', []);
+
+//factory returns an object
+app.factory('PhoneBook', function(){
+	var book = {}
+	book.people = [
+			{name:"Andrew", phone:"1234567"},
+			{name:"Natasha", phone:"784211"},
+			{name:"Billy", phone:"1235571"},
+			{name:"Amanda", phone:"4112311"},
+			{name:"Police", phone:"911"},
+			{name:"Bilana", phone:"12991"}
+			];
+	return book;
+})
+
+
+app.controller('Ctrl1', function($scope, PhoneBook){
+	$scope.data = PhoneBook;
+})
+
+
+</script>
+
+</body>
+</html>

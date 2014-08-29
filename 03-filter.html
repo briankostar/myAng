@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Filters</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js"></script>
+</head>
+<body >
+<h1>Filters<h1>
+<div ng-app="myApp">
+<div ng-controller="Ctrl1"><input ng-model="data.data" />{{data.data}}</div>
+<div ng-controller="Ctrl2"><input ng-model="data.data" />{{data.data | reverse}}</div>
+</div>
+
+<script>
+var app = angular.module('myApp', []);
+
+//factory returns an object
+app.factory('DataFactory', function(){
+	return {data: "Hello"}
+})
+
+//filter returns a processed variable
+app.filter('reverse', function(DataFactory){
+	return function(toReverse){
+		return toReverse.split('').reverse().join('') + DataFactory.data;
+	}
+
+})
+
+app.controller('Ctrl1', function($scope, DataFactory){
+	$scope.data = DataFactory;
+})
+
+app.controller('Ctrl2', function($scope, DataFactory){
+	$scope.data = DataFactory;
+})
+</script>
+
+</body>
+</html>

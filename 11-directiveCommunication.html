@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Directive</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js"></script>
+
+</head>
+<body >
+<h1>Compo & Contain</h1>
+<div ng-app="myApp">
+
+	<space> Space:
+		<earth> Earth:
+			<country>Country:</country>
+		</earth>
+	</space>
+</div>
+
+<script>
+var app = angular.module("myApp", []);
+
+//a normal directive with just a function
+app.directive("space", function(){
+	return {
+		restrict: "E",
+		controller: function(){
+			this.where = function(name){
+				console.log("I'm in space " + name);
+			}
+		}
+	}
+})
+
+app.directive("earth", function(){
+	return {
+		restrict: "E",
+		//require space element Above to use this
+		require: "^space",
+		controller: function(){
+			this.whereNow = function(name){
+				console.log("I'm in earth " + name);
+			}
+		},
+		link: function(scope, element, attr, SpaceCtrl){
+			SpaceCtrl.where("Eartho")
+		}
+	}
+})
+
+//to connect to 2 directives above & use their functions:
+app.directive("country", function(){
+	return {
+		restrict: "E",
+		//require space element & earth Above to use this
+		require: ["^space", "^earth"],
+		//Ctrls is an array we can use
+		link: function(scope, element, attr, Ctrls){
+			Ctrls[0].where("Countray");
+			Ctrls[1].whereNow("Countray");
+		}
+	}
+})
+
+</script>
+
+</body>
+</html>

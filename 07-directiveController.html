@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Directive</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js"></script>
+
+</head>
+<body >
+<h1>Connecting controller functions in directives</h1>
+<div ng-app="myApp">
+<div ng-controller="Ctrl">
+	<div tweet>Load more tweet by hovering</div>
+	<div tweets="loadMoreTweets()">Loading tweets!</div>
+</div>
+</div>
+
+<script>
+var app = angular.module('myApp', []);
+
+app.controller("Ctrl", function($scope){
+  $scope.loadMoreTweets = function() {
+    alert("Loading tweets!");
+  }
+
+})
+
+app.directive("tweet", function(){
+	return {
+		restrict: "A",
+		//doesnt work if you pass scope/el/attr out of order
+		link: function(scope, element, attr){
+			element.bind("mouseenter", function(){
+				//on mouseenter, call scope's loadMoreTweets
+				scope.loadMoreTweets();
+			})
+		}
+	}
+})
+
+//Since we dont know directive's scope is the scope we should look for the method, we use $apply
+//.$apply() takes in string, and finds the method within scope and invoke it directly
+//$apply takes a function, executes it, then also call .$digest() to update the binding or watchers
+//Also a better convention is to get the attr from attr.x and call that.
+app.directive("tweets", function(){
+	return function(scope, element, attr){
+		element.bind("mouseenter", function(){
+			scope.$apply(attr.tweets)
+		})
+	}
+})
+
+</script>
+
+</body>
+</html>

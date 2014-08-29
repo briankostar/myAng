@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Directive Scope</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js">
+	</script>
+
+</head>
+<body >
+<h1>Isolate Scope</h1>
+<div ng-app="myApp">
+
+
+	<div ng-controller="AppCtrl">
+		<div drink flavor="strawberry"></div>
+		<div drinks flavor="{{flavor}}"></div>
+
+	</div>
+
+</div>
+
+<script>
+var app = angular.module("myApp", []);
+app.controller('AppCtrl', function($scope){
+	$scope.flavor = "cherry"
+})
+
+app.directive('drink', function(){
+	return {
+		template: '<div>{{ flavor }}</div>',
+		scope:{},
+    	link: function (scope, element, attr) {
+    		//get this el's attr called favor and set it to scope
+    		//we overwrite the scope here with directive's scope.
+    		//without scope:{}, this is the controller's scope
+      		scope.flavor = attr.flavor;
+      	}
+	}
+})
+//this does same as above
+app.directive('drinks', function(){
+	return {
+		//sets scope.flavor to attr.flavor
+		scope: {
+			flavor: "@"
+		},
+		template: '<div>{{ flavor }}</div>'
+	}
+})
+/**
+Summary:
+scope:{attr:"@"} automatically sets up the attr and makes new scope
+scope:{} seperates the directive scope from parent. without it, scope refers to the parent scope
+by doing {{data}}, we get controller's model, and the directive grabs that and puts it into its own scope
+**/
+</script>
+
+</body>
+</html>

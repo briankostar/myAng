@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Directive</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js"></script>
+
+</head>
+<body >
+<h1>Transclusion: including a doc in another doc as a ref</h1>
+<div ng-app="myApp">
+<boxbox>
+	<div>HTML within boxbox</div>
+</boxbox>
+</div>
+
+<script>
+var app = angular.module('myApp', []);
+
+//create a E directive
+app.directive("boxbox", function(){
+	return {
+		restrict: "E",
+		//normally this template will go inside <boxbox>. Content inside in HTML gets replaced.
+		//unless we set transclude:true and add ng-transclude
+		transclude: true,
+		//actually, what this did was.. use the actual HTML content instead of template content.. yup. replace.
+		template: "<div>I'm a outerbox <div ng-transclude>I'm inner box</div> </div>"
+	}
+})
+</script>
+
+</body>
+</html>

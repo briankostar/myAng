@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Directive</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js"></script>
+</head>
+<body >
+<h1>Directive</h1>
+<div ng-app="myApp">
+
+<basicdirective></basicdirective>
+<div attributedirective>A</div>
+<div class="classdirective">C</div>
+<!-- directive:commentdirective -->
+</div>
+
+<script>
+var app = angular.module('myApp', []);
+
+//directives return an object
+//doesn't seem to work if capitalized
+app.directive('basicdirective', function(){
+	return {
+		restrict: "E",
+		template: "<div>Hey there, I'm a directive</div>"
+	}
+})
+
+//link gives behaviour to attributes and classes
+app.directive('attributedirective', function(){
+	return {
+		restrict: "A",
+		link: function(){ 
+			alert("I'm an attribute");
+		}
+	};
+
+});
+
+app.directive('classdirective', function(){
+	return {
+		restrict: "C",
+		link: function(){ 
+			alert("I'm a class");
+		}
+	};
+
+});
+
+app.directive('commentdirective', function(){
+	return {
+		restrict: "M",
+		link: function(){ 
+			alert("I'm a comment");
+		}
+	};
+
+});
+
+</script>
+
+</body>
+</html>

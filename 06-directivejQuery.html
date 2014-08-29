@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Directive</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js"></script>
+	<style>
+	.green{
+	background-color: green;
+	border:1px solid black;
+	}
+	.red{
+		background-color:red;
+		border:1px solid black;
+	}
+	.orange{
+		background-color: orange;
+		border:1px solid black;
+	}
+	</style>
+</head>
+<body >
+<h1>Directive</h1>
+<div ng-app="myApp">
+
+<div enter leave>Hey yo!</div>
+<div in out>Sup man!</div>
+<div hover="orange">Don't forget me!</div>
+</div>
+
+<script>
+var app = angular.module('myApp', []);
+
+var count = 0;
+app.directive('enter', function(){
+	return {
+		restrict: "A",
+		//"A" can take scope and element to affect behaviour
+		link: function(scope, element){
+			//element refers to the current element. .bind() attaches an event to this el.
+			element.bind("mouseenter", function(){
+				console.log("I'm inside this element!" + count)
+				count++;
+			})
+		}
+	}
+})
+//"A" is default directive so can be ommited
+//And if 'link' is the only function, we can use shorthand like this:
+app.directive('leave', function(){
+	return function(scope, element){
+		element.bind("mouseleave", function(){
+			console.log("I just left this element" + count)
+			count++;
+		})
+	}
+})
+// Class editing ===================================
+
+app.directive('in', function(){
+	return function(scope, element){
+		element.bind("mouseenter", function(){
+			//.addClass() is a jquery like function that adds class to this el!
+			element.addClass("green")
+			element.removeClass("red")
+			console.log("I just entered this element" )
+		})
+	}
+})
+app.directive('out', function(){
+	return function(scope, element){
+		element.bind("mouseleave", function(){
+			//attr.xenter gets the string of enter=""
+			element.removeClass("green")
+			element.addClass("red")
+			console.log("I just left this element")
+		})
+	}
+})
+//====================
+//instead of defining the class here, we can make this code resuable.
+//pass the 'attr', and it'll get the attr of the element
+app.directive('hover', function(){
+	return function(scope, element, attr){
+		element.bind("mouseenter", function(){
+			//on enter, add this class that's set to hover's attribute. 
+			//May need attr.$observe() if we're using {{interpolation}}
+			element.addClass(attr.hover)
+		})
+		element.bind("mouseleave", function(){
+			element.removeClass(attr.hover)
+		})
+	}
+})
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Directive</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js"></script>
+
+</head>
+<body >
+<h1>Directive to Directive Communication</h1>
+<div ng-app="myApp">
+		<startup angels developers visitors>Facebook</startup>
+		<startup developers visitors>rangle</startup>
+		<startup developers>Mine</startup>
+</div>
+</div>
+
+<script>
+var app = angular.module('myApp', []);
+
+app.directive('startup', function(){
+	return{
+		restrict: "E",
+		scope: {},
+		//E can have it's own controller, which, is a function
+		controller: function($scope){
+			$scope.value = [];
+
+			//we use 'this' as another directive will call this function
+			//this controller will be used as an API for other directives
+			this.addCapital = function(){
+				$scope.value.push("Millions")
+			}
+			this.addTalent = function(){
+				$scope.value.push("hackers")
+			}
+			this.addUsers = function(){
+				$scope.value.push("users")
+			}
+		},
+		link: function(scope, element){
+			element.bind("mouseenter", function(){
+				console.log(scope.value);
+			});
+		}
+	}
+})
+//another 'A' directive that needs the 'E' directive.
+app.directive('angels', function(){
+	return {
+		require: "startup",
+		//4th value is always the required's element's controller and can be named anything.
+		//what if you have several required E? can you?
+		link: function(scope, element, attr, xstartup){
+			xstartup.addCapital();
+		}
+	}
+})
+app.directive('developers', function(){
+	return {
+		require: "startup",
+		link: function(scope, element, attr, xstartup){
+			xstartup.addTalent();
+		}
+	}
+})
+
+app.directive('visitors', function(){
+	return {
+		require: "startup",
+		link: function(scope, element, attr, xstartup){
+			xstartup.addUsers();
+		}
+	}
+})
+
+
+</script>
+
+</body>
+</html>

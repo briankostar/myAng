@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Scope</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js"></script>
+</head>
+<body >
+<h1>Scope Inheritance<h1>
+<div ng-app="myApp">
+<input type="text" ng-model="linked.data" ng-init="this is seperated model"/>
+	{{linked.data}}
+
+<div ng-controller="MyCtrl1">
+	<input type="text" ng-model="linked.data" />
+	{{linked.data}}
+	{{data}}
+</div>
+	
+<div ng-controller="MyCtrl2">
+	<input type="text" ng-model="linked.data" />
+	{{linked.data}}
+	{{data}}
+</div>
+
+</div>
+
+<script>
+var app = angular.module('myApp', function(){})
+
+//to connect 2 controllers, you can make a parent scope and don't define the model again in the controller as this
+//will break the scope inheritance
+
+//to keep scope inheritance, you can set data inside the parent scope object like: linked.data instead of data.
+app.controller('MyCtrl1', function($scope){
+	//seems linked.data connects to parent scope
+
+	//seems like we can't set scope.linked.data as it refers to the parent
+	//this breaks everything.
+	//$scope.linked.data = "linked_data!"
+	$scope.data = "Ctrl1 data"
+
+})
+
+app.controller('MyCtrl2', function($scope){
+	$scope.data = "Ctrl2 data"
+})
+
+</script>
+
+</body>
+</html>
