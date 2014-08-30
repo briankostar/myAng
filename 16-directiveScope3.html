@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Directive Scope</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js">
+	</script>
+
+</head>
+<body >
+<h1>Isolate Scope & </h1>
+<div ng-app="myApp">
+
+  <div ng-controller="AppCtrl">
+    <div phone dial="callHome(message)"></div>
+    <div phone dial="callHome(message)"></div>
+    <div phone dial="callHome(message)"></div>
+  </div>
+
+</div>
+
+<script>
+// the '&' allows you to invoke/evaluate {{}} on the parent scope of what the directive is in.
+var app = angular.module("myApp", []);
+
+app.controller("AppCtrl", function ($scope) {
+	//controller with a function that takes input
+  $scope.callHome = function (message) {
+    alert(message);
+  };
+});
+ 
+app.directive("phone", function () {
+  return {
+    scope: {
+    	//this sets scope.dial to callHome(input) function
+      dial: "&"
+    },
+    //dial() is a function on this directive scope that.. calls to controller's function as set in scope
+    template: '<input type="text" ng-model="value">' + 
+    			//{message: value} here will connect to function(message) on html
+    			'<a href="#" ng-click="dial({message: value})">Call home!</a>',
+  };
+});
+
+</script>
+
+</body>
+</html>
