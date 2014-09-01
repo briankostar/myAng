@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Routing</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js">
+	</script>
+	<script src="https://code.angularjs.org/1.3.0-beta.19/angular-route.min.js"></script>
+</head>
+<body >
+<h1>ng-view</h1>
+<div ng-app="myApp">
+<div ng-controller="configCtrl">
+  <ng-view></ng-view>
+</div>
+</div>
+
+<script>
+//**NOTE, angular route is now its own module. Thus, must load the script seperately
+var app = angular.module("myApp", ['ngRoute']);
+
+//config sets up settings? for the module. No need for name, just takes function.
+//causes XMLHttpRequest fail. Apparently, cannot query for local files with JS.
+app.config(function($routeProvider){
+	$routeProvider.when('/', {
+		templateUrl: "partial1.html",
+		controller: "configCtrl"
+	});
+});
+
+app.controller('configCtrl', function($scope){
+	$scope.model = { title: "Config and ng-view" }
+})
+
+</script>
+
+</body>
+</html>
