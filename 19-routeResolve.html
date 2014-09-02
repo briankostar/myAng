@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>routing</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js">
+	</script>
+	<script src="https://code.angularjs.org/1.3.0-beta.19/angular-route.min.js"></script>
+
+</head>
+<body >
+<h1>route resolve</h1>
+<div ng-app="myApp">
+	<ng-view></ng-view>
+</div>
+
+<script>
+var app = angular.module("myApp", ['ngRoute']);
+
+app.config(function($routeProvider){
+	$routeProvider.when('/', {
+		template: "{{model.name}}",
+		controller: "AppCtrl",
+		//list of promises to finish before doing anything
+		//good for getting resources b4 doing anything
+		resolve: {
+			
+			app: function($q, $timeout){
+				//make defer object with $q promise library
+				var defer = $q.defer();
+				//use timeout to defer a promise after 2 sec
+				$timeout(function(){
+					defer.resolve();
+				}, 1000);
+
+				return defer.promise;
+			},
+			
+			loaddata: appCtrl.loadData,
+			prepdata: appCtrl.prepData
+		}
+	})
+})
+var appCtrl = app.controller("AppCtrl", function($scope){
+	$scope.model = { name: "My name is AppCtrl"}
+
+})
+//cleaner way to organize resolve{}
+appCtrl.loadData = function($q, $timeout){
+		var defer = $q.defer();
+		$timeout(function(){
+			//resolve the promise
+			defer.resolve('resolved');			
+			console.log("loadData")
+		}, 2000);
+		return defer.promise;
+	}
+ 
+appCtrl.prepData = function ($q, $timeout) {
+  var defer = $q.defer();
+  $timeout(function () {
+    defer.resolve(); 
+    console.log("prepdata");
+  }, 3000);
+  return defer.promise;
+};
+
+</script>
+
+</body>
+</html>

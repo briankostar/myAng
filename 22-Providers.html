@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Providers</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js">
+	</script>
+	<script src="https://code.angularjs.org/1.3.0-beta.19/angular-route.min.js"></script>
+
+</head>
+<body >
+<h1>Truth about Factories</h1>
+<div ng-app="myApp" ng-controller="AppCtrl">
+{{genre}}
+{{genre1}}
+{{genre2}}
+{{genre3}}
+</div>
+
+<script>
+//What's a provider? It's things like $scope, factory data, or etc that you can inject into the controller. 
+//Factories are actually providers.
+var app = angular.module("myApp", ['ngRoute']);
+
+//typical factory:
+app.factory("book", function(){
+	return {
+		genre: "SciFi"
+	}
+})
+
+//factory actually comes from the $provide service
+//$provide sets up the injector for factories defined on it
+app.config(function ($provide){
+	$provide.factory("book1", function(){
+		return {
+			genre: "Romance"
+		}
+	})
+})
+
+//And, $provide.factory() is actually a shorthand for $provide.provider
+//which sets up a more generic provide that return objects with $get functions
+app.config(function($provide){
+	$provide.provider("book2", function(){
+		return {
+			$get: function(){
+				return {
+					genre: "Horror"
+				}
+			}
+		}
+	})
+})
+
+//Finally, we can even take out the $provider out of config and inject as
+//bookProvider into it by making a provider directly on the app
+app.provider('books', function(){
+	//higly customizable
+	var type;
+	return {
+		//we can add a function to change the value easier
+		setType: function(value){
+			type = value;
+		},
+		$get: function(){
+			return {
+				genre: type + " novel"
+			}
+		}
+	}
+}) 
+app.config(function (booksProvider){
+	booksProvider.setType('light');
+})
+
+//injecting Providers. $scope is actually scopeProvider
+app.controller("AppCtrl", function($scope, book, book1, book2, books){
+	$scope.genre = book.genre;
+	$scope.genre1 = book1.genre;
+	$scope.genre2 = book2.genre;
+	$scope.genre3 = books.genre;
+})
+
+</script>
+
+</body>
+</html>

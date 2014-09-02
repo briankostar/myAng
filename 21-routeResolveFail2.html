@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>routing</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js">
+	</script>
+	<script src="https://code.angularjs.org/1.3.0-beta.19/angular-route.min.js"></script>
+
+</head>
+<body >
+<h1>route resolve failure</h1>
+<div ng-app="myApp">
+	<error></error>
+	<ng-view></ng-view>
+</div>
+
+<script>
+var app = angular.module("myApp", ['ngRoute']);
+
+app.config(function($routeProvider){
+	$routeProvider.when('/', {
+		template: "{{model.name}}",
+		controller: "AppCtrl",
+		resolve: {	
+			loaddata: appCtrl.loadData
+		}
+	})
+})
+var appCtrl = app.controller("AppCtrl", function($scope){
+	$scope.model = { name: "My name is AppCtrl"}
+})
+appCtrl.loadData = function($q, $timeout){
+		var defer = $q.defer();
+		//defer.resolve();
+		defer.reject("I am the rejection message");
+		return defer.promise;
+}
+
+
+//directive to show error via UI, not just console.
+app.directive('error', function($rootScope){
+	return {
+		restrict: "E",
+		template: '<div ng-show="isError">Error!!!!! {{model.err}}</div>',
+		link: function(scope) {
+			$rootScope.$on("$routeChangeError", function(event, current_route, previous_route, custom_rejection_msg){
+				scope.isError = true;
+				scope.model = {err: custom_rejection_msg}
+			})
+		}
+	}
+})
+</script>
+
+</body>
+</html>

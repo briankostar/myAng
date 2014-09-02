@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>routing</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js">
+	</script>
+	<script src="https://code.angularjs.org/1.3.0-beta.19/angular-route.min.js"></script>
+
+</head>
+<body >
+<h1>Promise q</h1>
+<div ng-app="myApp">
+	<ng-view></ng-view>
+</div>
+
+<script>
+var app = angular.module("myApp", ['ngRoute']);
+
+app.config(function($routeProvider){
+	$routeProvider.when('/', {
+		template: "hi",
+		controller: "AppCtrl"
+	})
+})
+app.controller("AppCtrl", function($scope, $q){
+	//make defer object using $q
+	var defer = $q.defer()
+	//or $q.defer().promise.then()
+	//this prepares a function to be 'promised' to be executed in the future via 'resolve'
+	defer.promise.then(function(resolve_input){
+		alert("I'm a function promised to be executed" + resolve_input)
+
+		return "Man";
+	})
+	//chain method in queue. each takes return from previous promise
+	.then(function(return_value){
+		alert("whatever " + return_value)
+	})
+
+	defer.resolve("+1 Level");
+
+})
+</script>
+
+</body>
+</html>

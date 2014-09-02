@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>routing</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js">
+	</script>
+	<script src="https://code.angularjs.org/1.3.0-beta.19/angular-route.min.js"></script>
+
+</head>
+<body >
+<h1>route resolve failure</h1>
+<div ng-app="myApp">
+<div ng-controller="ErrCtrl">
+	<ng-view></ng-view>
+	</div>
+</div>
+
+<script>
+//what do we do when resolve fails? well.. the controller for that'll never get executed
+//thus we need another controller to handle the error.
+var app = angular.module("myApp", ['ngRoute']);
+
+app.config(function($routeProvider){
+	$routeProvider.when('/', {
+		template: "{{model.name}}",
+		controller: "AppCtrl",
+		resolve: {	
+			loaddata: appCtrl.loadData
+		}
+	})
+})
+var appCtrl = app.controller("AppCtrl", function($scope){
+	$scope.model = { name: "My name is AppCtrl"}
+})
+appCtrl.loadData = function($q, $timeout){
+		var defer = $q.defer();
+		//when this fails, AppCtrl is never instantiated
+		defer.reject("I am the rejection message");
+		return defer.promise;
+}
+
+
+//pass rootscope to listen to rootscope events. 
+//Just wrap other HTML with this controller's scope so this'll run at least
+app.controller("ErrCtrl", function($rootScope){
+	//on routechangeerror, activates
+	$rootScope.$on("$routeChangeError", function(event, current_route, previous_route, custom_rejection_msg){
+		//console.log("failed to change routes")
+		console.log(event);
+		console.log(current_route);
+		console.log(previous_route);
+		console.log(custom_rejection_msg);
+	})
+})
+</script>
+
+</body>
+</html>
